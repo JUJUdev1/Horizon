@@ -5,6 +5,7 @@ import cors from 'cors';
 import connectDB from './mongodb/connect.js';
 import postRoutes from './routes/postRoutes.js';
 import dalleRoutes from './routes/dalleRoutes.js';
+import chatgptRoutes from './routes/chatgptRoutes.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json({ limit: '50mb' }));
 
 app.use('/api/v1/posts', postRoutes);
 app.use('/api/v1/dalle', dalleRoutes);
+app.use('/api/v1/chatgpt', chatgptRoutes);
 
 app.get('/', async (req, res) => {
   res.send('Hello From Horizon Tech!');
