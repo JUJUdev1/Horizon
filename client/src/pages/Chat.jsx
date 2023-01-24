@@ -1,37 +1,52 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Configuration, OpenAIApi } from 'openai';
+
+const configuration = new Configuration({
+  apiKey: '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'
+});
+const openai = new OpenAIApi(configuration);
+
+const generateResponse = async (prompt) => {
+  const { data } = await openai.createCompletion({
+    engine: 'davinci',
+    prompt,
+    maxTokens: 5,
+    temperature: 0.9,
+    topP: 1,
+    presencePenalty: 0,
+    frequencyPenalty: 0,
+    bestOf: 1,
+    n: 1,
+    stream: false,
+    stop: ['\n', ' Human:', ' AI:'],
+  });
+  return data.choices[0].text;
+}
+
+
+
+
+
+
 
 const Chat = () => {
-  const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch('https://api.openai.com/v1/engines/davinci/completions', {
-        prompt: prompt,
-        temperature: 0.5
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': "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"
-        }
-      });
-      setResponse(res.data);
-      console.log(response)
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const userInput = e.target.elements.userInput.value;
+    setResponse(await generateResponse(userInput));
+  }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input type="text" value={prompt} onChange={e => setPrompt(e.target.value)} />
+        <input type="text" name="userInput" />
         <button type="submit">Submit</button>
       </form>
       <p>{response}</p>
     </div>
   );
-};
+}
 
 export default Chat;
